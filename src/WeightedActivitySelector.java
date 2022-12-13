@@ -78,7 +78,7 @@ public class WeightedActivitySelector {
         int extensionIndex = inputName.lastIndexOf('.');
         if(extensionIndex != -1) inputName = inputName.substring(0, extensionIndex);
         File parentDirectory = inputFile.getParentFile();
-        File outputFile = new File(parentDirectory.getAbsolutePath() + inputName + "_19015478.out");
+        File outputFile = new File(parentDirectory.getAbsolutePath() + "/" + inputName + "_19015478.out");
         outputFile.createNewFile();
         FileWriter writer = new FileWriter(outputFile);
         writer.write(output + "");
@@ -87,7 +87,7 @@ public class WeightedActivitySelector {
     }
 
     public static void main(String[] args) {
-        String inputPath = "E://test1.txt";
+        String inputPath = "C://Users/al-alamia/Downloads/test.txt";
         try {
             Activity[] a = WeightedActivitySelector.ReadInput(inputPath);
             int maxWeight = WeightedActivitySelector.selectOptimalActivities(a);

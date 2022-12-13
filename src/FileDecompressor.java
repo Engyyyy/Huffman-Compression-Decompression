@@ -9,14 +9,13 @@ public class FileDecompressor {
     int n;
     int residualSize;
 
-    public FileDecompressor(String inPath) throws IOException {
+    public FileDecompressor(String inPath) {
         inputFile = new File(inPath);
         File parentDir = inputFile.getParentFile();
         int extensionIndex = inputFile.getName().lastIndexOf('.');
         String inNameWithoutExtension = inputFile.getName().substring(0, extensionIndex);
         String outPath = parentDir.getAbsolutePath() + "/extracted." + inNameWithoutExtension;
         outputFile = new File(outPath);
-        outputFile.createNewFile();
     }
 
     private ReadByte readBit(ReadByte readByte, BufferedInputStream inStream) throws IOException {
@@ -58,7 +57,6 @@ public class FileDecompressor {
                 readByte = null;
             }
         }
-        huffmanTree.printMap("debug2.txt");
     }
 
     private void writeFile(BufferedInputStream inStream) throws IOException {
@@ -90,7 +88,6 @@ public class FileDecompressor {
             nextByte = nextNextByte;
             nextNextByte = inStream.read();
         }
-        System.out.println(currByte);
         readByte = new ReadByte(currByte);
         while(nextByte > 0) {
             if(node.isLeafNode()) {
@@ -108,7 +105,6 @@ public class FileDecompressor {
                 node = huffmanTree.getRoot();
             }
             int bit = readByte.getNextBit();
-            System.out.println(bit);
             if(bit == 0) node = node.getLeftChild();
             else node = node.getRightChild();
             nextByte--;
@@ -125,7 +121,6 @@ public class FileDecompressor {
                 outStream.write(b);
                 valBytes--;
             }
-            node = huffmanTree.getRoot();
         }
         outStream.close();
     }
@@ -138,10 +133,13 @@ public class FileDecompressor {
     }
 
     public static void main(String[] args) {
-        String inPath = "C://Users/al-alamia/Downloads/19015478.5.Algorithms.pdf.hc";
+        String inPath = "C://Users/al-alamia/Downloads/19015478.1.Hunter.mp4.hc";
         try {
             FileDecompressor decompressor = new FileDecompressor(inPath);
+            long start = System.currentTimeMillis();
             decompressor.decompress();
+            long end = System.currentTimeMillis();
+            System.out.println(end - start);
         }
         catch(Exception e) {
             System.out.println("Error: " + e);

@@ -10,13 +10,12 @@ public class FileCompressor {
     private int residualSize;
     BinaryTree huffmanTree;
 
-    public FileCompressor(String inPath, int n) throws IOException {
+    public FileCompressor(String inPath, int n) {
         inputFile = new File(inPath);
         this.n = n;
         File parentDir = inputFile.getParentFile();
         String outPath = parentDir.getAbsolutePath() + "/19015478." + n + "." + inputFile.getName() + ".hc";
         outputFile = new File(outPath);
-        outputFile.createNewFile();
         freqMap = new HashMap<>();
     }
 
@@ -24,13 +23,11 @@ public class FileCompressor {
         long nBytes = 0;
         int count = 0;
         int currByte;
-        boolean flag = true;
         BufferedInputStream inStream = new BufferedInputStream(new FileInputStream(inputFile));
         while((currByte = inStream.read()) != -1) {
             nBytes = (nBytes << 8) + currByte;
             count++;
             if(count == n) {
-                flag = false;
                 if(freqMap.containsKey(nBytes)) freqMap.put(nBytes, freqMap.get(nBytes) + 1);
                 else freqMap.put(nBytes, 1);
                 nBytes = 0;
@@ -42,7 +39,7 @@ public class FileCompressor {
         inStream.close();
     }
 
-    private void generateHuffmanTree() throws IOException {
+    private void generateHuffmanTree() {
         PriorityQueue<BinaryTree> minHeap = new PriorityQueue<>();
         for(long key : freqMap.keySet()) {
             Node root = new Node(freqMap.get(key), key);
@@ -55,7 +52,6 @@ public class FileCompressor {
             minHeap.add(new BinaryTree(min1, min2));
         }
         huffmanTree = minHeap.peek();
-        huffmanTree.printMap("debug1.txt");
     }
 
     private void writeHeader(BufferedOutputStream outStream) throws IOException {
@@ -139,7 +135,6 @@ public class FileCompressor {
         }
         if(count_write > 0) {
             byteToWrite = (byteToWrite << (8 - count_write));
-            System.out.println(byteToWrite);
             outStream.write(byteToWrite);
         }
         outStream.write(count_write);
@@ -155,11 +150,14 @@ public class FileCompressor {
     }
 
     public static void main(String[] args) {
-        String inPath = "C://Users/al-alamia/Downloads/Algorithms.pdf";
-        int n = 5;
+        String inPath = "C://Users/al-alamia/Downloads/Hunter.mp4";
+        int n = 1;
         try {
             FileCompressor compressor = new FileCompressor(inPath, n);
+            long start = System.currentTimeMillis();
             compressor.compress();
+            long end = System.currentTimeMillis();
+            System.out.println(end - start);
         }
         catch(Exception e) {
             System.out.println("Error: " + e);
